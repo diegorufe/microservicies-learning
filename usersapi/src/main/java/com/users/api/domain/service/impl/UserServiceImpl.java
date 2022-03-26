@@ -25,7 +25,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDTO create(UserDTO userDTO) {
-        this.userProducer.sendEventFromCommand(new UserCommand(EnumUserCommandType.CREATE, userDTO));
+        this.userProducer.sendEventFromCommand(new UserCommand(EnumUserCommandType.CREATED, userDTO));
         return userDTO;
     }
 }

@@ -8,7 +8,7 @@ import com.users.api.core.commands.ICommandType;
  * @author diego
  */
 public enum EnumUserCommandType implements ICommandType {
-    CREATE,
+    CREATED,
     ;
 
     @Override
