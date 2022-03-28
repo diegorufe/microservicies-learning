@@ -13,10 +13,20 @@ public class UserDTO extends BaseDTO {
     @Serial
     private static final long serialVersionUID = 3905459423668981452L;
 
+    private Integer id;
+
     private String nick;
 
     private String name;
 
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getNick() {
         return nick;
@@ -37,7 +47,8 @@ public class UserDTO extends BaseDTO {
     @Override
     public String toString() {
         return "UserDTO{" +
-                "nick='" + nick + '\'' +
+                "id=" + id +
+                ", nick='" + nick + '\'' +
                 ", name='" + name + '\'' +
                 '}';
     }

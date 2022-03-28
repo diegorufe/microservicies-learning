@@ -9,6 +9,11 @@ import com.users.api.core.beans.commands.ICommandType;
  */
 public enum EnumUserCommandType implements ICommandType {
     CREATED,
+
+    EDITED,
+
+    DELETED,
+
     ;
 
     @Override
