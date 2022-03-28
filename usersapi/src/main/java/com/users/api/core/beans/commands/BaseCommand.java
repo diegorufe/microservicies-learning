@@ -1,4 +1,4 @@
-package com.users.api.core.commands;
+package com.users.api.core.beans.commands;
 
 import java.io.Serial;
 import java.io.Serializable;

@@ -1,6 +1,6 @@
 package com.users.api.domain.commands;
 
-import com.users.api.core.commands.ICommandType;
+import com.users.api.core.beans.commands.ICommandType;
 
 /**
  * Enumerado para definir los tipos de comandos de usuarios

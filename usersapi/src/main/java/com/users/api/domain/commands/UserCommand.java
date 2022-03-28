@@ -1,6 +1,6 @@
 package com.users.api.domain.commands;
 
-import com.users.api.core.commands.BaseCommand;
+import com.users.api.core.beans.commands.BaseCommand;
 import com.users.api.domain.dto.UserDTO;
 
 import java.io.Serial;

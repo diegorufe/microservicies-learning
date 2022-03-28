@@ -1,4 +1,4 @@
-package com.users.api.core.commands;
+package com.users.api.core.beans.commands;
 
 /**
  * Interfaz para definir el tipo de comando a enviar en eventos

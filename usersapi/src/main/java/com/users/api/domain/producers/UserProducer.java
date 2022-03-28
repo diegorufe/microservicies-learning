@@ -1,5 +1,6 @@
 package com.users.api.domain.producers;
 
+import com.users.api.core.beans.event.Event;
 import com.users.api.domain.commands.UserCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 public class UserProducer {
 
     @Autowired
-    private KafkaTemplate<String, UserCommand> userKafkaTemplate;
+    private KafkaTemplate<String, Event<UserCommand>> userKafkaTemplate;
 
     @Value(value = "${kafka.topic.user.name}")
     private String topic;
@@ -31,11 +32,11 @@ public class UserProducer {
      * @param userCommand es el comando de usuario que queremos enviar
      */
     public void sendEventFromCommand(UserCommand userCommand) {
-        ListenableFuture<SendResult<String, UserCommand>> future = this.userKafkaTemplate.send(this.topic, userCommand);
+        ListenableFuture<SendResult<String, Event<UserCommand>>> future = this.userKafkaTemplate.send(this.topic, new Event<>(userCommand));
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
-            public void onSuccess(SendResult<String, UserCommand> result) {
-                log.info("UserCommand {} has been sent ", userCommand);
+            public void onSuccess(SendResult<String, Event<UserCommand>> result) {
+                log.info("UserCommand {} has been sent ", result);
             }
 
             @Override

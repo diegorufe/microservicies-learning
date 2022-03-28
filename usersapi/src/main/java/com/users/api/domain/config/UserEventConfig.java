@@ -1,5 +1,6 @@
 package com.users.api.domain.config;
 
+import com.users.api.core.beans.event.Event;
 import com.users.api.domain.commands.UserCommand;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -27,14 +28,14 @@ public class UserEventConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    private ConsumerFactory<String, UserCommand> userConsumerFactory() {
+    private ConsumerFactory<String, Event<UserCommand>> userConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         // Indicamos cual debe ser su serializador para convertir los mensajes a enviar
         return new DefaultKafkaConsumerFactory<>(
                 props,
                 new StringDeserializer(),
-                new JsonDeserializer<>(UserCommand.class));
+                new JsonDeserializer<>(Event.class));
     }
 
     /**
@@ -42,8 +43,8 @@ public class UserEventConfig {
      * Esto no tiene mucho sentido ser productor y consumidor de si mismo pero para poder reazliar pruebas de forma rápida es la mejor opción
      */
     @Bean("userKafkaListenerContainerFactory")
-    public ConcurrentKafkaListenerContainerFactory<String, UserCommand> userKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, UserCommand> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, Event<UserCommand>> userKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Event<UserCommand>> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(userConsumerFactory());
         return factory;
@@ -55,7 +56,7 @@ public class UserEventConfig {
      * @return
      */
     @Bean
-    public ProducerFactory<String, UserCommand> userProducerFactory() {
+    public ProducerFactory<String, Event<UserCommand>> userProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -69,7 +70,7 @@ public class UserEventConfig {
      * @return
      */
     @Bean
-    public KafkaTemplate<String, UserCommand> userKafkaTemplate() {
+    public KafkaTemplate<String, Event<UserCommand>> userKafkaTemplate() {
         return new KafkaTemplate<>(userProducerFactory());
     }
 }
