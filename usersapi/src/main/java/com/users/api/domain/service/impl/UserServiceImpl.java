@@ -1,8 +1,7 @@
 package com.users.api.domain.service.impl;
 
-import com.users.api.domain.commands.EnumUserCommandType;
-import com.users.api.domain.commands.UserCommand;
 import com.users.api.domain.dto.UserDTO;
+import com.users.api.domain.event.UserEvent;
 import com.users.api.domain.producers.UserProducer;
 import com.users.api.domain.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class UserServiceImpl implements IUserService {
     public UserDTO create(UserDTO userDTO) {
         userDTO.setId(this.listUserInMemoryStorage.size());
         this.listUserInMemoryStorage.add(userDTO);
-        this.userProducer.sendEventFromCommand(new UserCommand(EnumUserCommandType.CREATED, userDTO));
+        this.userProducer.sendEvent(UserEvent.createdUserEvent(userDTO));
         return userDTO;
     }
 
@@ -56,7 +55,7 @@ public class UserServiceImpl implements IUserService {
 
         this.listUserInMemoryStorage.set(this.listUserInMemoryStorage.indexOf(userDtoEdit), userDTO);
 
-        this.userProducer.sendEventFromCommand(new UserCommand(EnumUserCommandType.EDITED, userDTO));
+        this.userProducer.sendEvent(UserEvent.editedUserEvent(userDTO));
         return userDTO;
     }
 
@@ -70,7 +69,7 @@ public class UserServiceImpl implements IUserService {
 
         this.listUserInMemoryStorage.remove(userDtoDelete);
 
-        this.userProducer.sendEventFromCommand(new UserCommand(EnumUserCommandType.DELETED, userDtoDelete));
+        this.userProducer.sendEvent(UserEvent.deletedUserEvent(userDTO));
 
         return true;
     }

@@ -1,15 +1,16 @@
-package com.users.api.core.beans.event;
+package com.users.api.core.event;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Clase para guardar el evento producido por el productor y leido por el consumidor
  *
  * @author diego
  */
-public class Event<DATA> implements Serializable {
+public abstract class Event<EVENT_TYPE extends IEventType, DATA> implements Serializable {
     @Serial
     private static final long serialVersionUID = -6481732092393047136L;
 
@@ -33,24 +34,36 @@ public class Event<DATA> implements Serializable {
      */
     private int order;
 
-    public Event(){
+    /**
+     * Tipo de evento
+     */
+    private EVENT_TYPE eventType;
 
+
+    public Event(DATA data, String processId, int order) {
+        this.data = data;
+        this.processId = processId;
+        this.order = order;
+        this.date = new Date();
+        this.generateProcessId();
+    }
+
+    public Event() {
+        this(null, null, 0);
+    }
+
+
+    public Event(EVENT_TYPE eventType, DATA data) {
+        this(data, null, 0);
+        this.eventType = eventType;
     }
 
     public Event(DATA data) {
-        this.data = data;
-        this.date = new Date();
+        this(data, null, 0);
     }
 
     public Event(DATA data, String processId) {
-        this(data);
-        this.processId = processId;
-    }
-
-    public Event(DATA data, String processId, int order) {
-        this(data);
-        this.processId = processId;
-        this.order = order;
+        this(data, processId, 0);
     }
 
 
@@ -84,6 +97,25 @@ public class Event<DATA> implements Serializable {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public EVENT_TYPE getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(EVENT_TYPE eventType) {
+        this.eventType = eventType;
+    }
+
+    /**
+     * Si el id de processo es null generamos un id aleatorio.
+     *
+     * <p>{Threadname}_{RandomUUID}_{NanoTIme}</p>
+     */
+    private void generateProcessId() {
+        if (this.processId == null) {
+            this.processId = Thread.currentThread().getId() + "_" + UUID.randomUUID() + "_" + System.nanoTime();
+        }
     }
 
     @Override

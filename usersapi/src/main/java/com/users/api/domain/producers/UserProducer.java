@@ -1,7 +1,6 @@
 package com.users.api.domain.producers;
 
-import com.users.api.core.beans.event.Event;
-import com.users.api.domain.commands.UserCommand;
+import com.users.api.domain.event.UserEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +20,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 public class UserProducer {
 
     @Autowired
-    private KafkaTemplate<String, Event<UserCommand>> userKafkaTemplate;
+    private KafkaTemplate<String, UserEvent> userKafkaTemplate;
 
     @Value(value = "${kafka.topic.user.name}")
     private String topic;
@@ -29,19 +28,19 @@ public class UserProducer {
     /**
      * Método para enviar un evento en base a un comando recibido
      *
-     * @param userCommand es el comando de usuario que queremos enviar
+     * @param event es el evento de usuario que queremos enviar
      */
-    public void sendEventFromCommand(UserCommand userCommand) {
-        ListenableFuture<SendResult<String, Event<UserCommand>>> future = this.userKafkaTemplate.send(this.topic, new Event<>(userCommand));
+    public void sendEvent(UserEvent event) {
+        ListenableFuture<SendResult<String, UserEvent>> future = this.userKafkaTemplate.send(this.topic, event);
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
-            public void onSuccess(SendResult<String, Event<UserCommand>> result) {
+            public void onSuccess(SendResult<String, UserEvent> result) {
                 log.info("UserCommand {} has been sent ", result);
             }
 
             @Override
             public void onFailure(Throwable ex) {
-                log.error("Something went wrong with the user command {} ", userCommand);
+                log.error("Something went wrong with the user command {} ", event);
             }
         });
     }

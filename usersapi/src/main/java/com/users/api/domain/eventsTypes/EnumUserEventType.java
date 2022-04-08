@@ -1,13 +1,14 @@
-package com.users.api.domain.commands;
+package com.users.api.domain.eventsTypes;
 
-import com.users.api.core.beans.commands.ICommandType;
+import com.users.api.core.event.IEventType;
 
 /**
  * Enumerado para definir los tipos de comandos de usuarios
  *
  * @author diego
  */
-public enum EnumUserCommandType implements ICommandType {
+public enum EnumUserEventType implements IEventType {
+
     CREATED,
 
     EDITED,
